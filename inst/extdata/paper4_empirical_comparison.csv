@@ -1,0 +1,6 @@
+"Dataset","k","p","kp_ratio","I2","Apparent_R2","CV_weighted","CV_unweighted","Delta_CV","Weight_CV","Weight_Gini","Max_Median","Anchor"
+"BCG",13,2,6.5,92.2,64.6,6.3,2.3,4,0.294,0.157,1.2,FALSE
+"Teacher",19,1,19,41.9,40.6,0,0,0,0.482,0.267,1.7,FALSE
+"Konstantopoulos",56,1,56,94.7,0,0,7.8,-7.8,0.201,0.103,1.1,FALSE
+"Berkey",10,1,10,98.3,0,0,0,0,0.05,0.023,1,FALSE
+"Hackshaw",37,1,37,29.6,0,28.7,100,-71.3,0.701,0.378,3.3,FALSE

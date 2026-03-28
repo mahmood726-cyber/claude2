@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Ahmad"
+  given-names: "Mahmood"
+title: "Evaluating the Reliability of Cross-Validated R² Estimates in Random-Effects Meta-Regression"
+version: 0.1.0
+date-released: 2026-02-23
+url: "https://github.com/cbamm-dev/claude2"

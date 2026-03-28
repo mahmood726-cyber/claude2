@@ -1,0 +1,51 @@
+---
+title: "Reproducing the CV R² Study Results"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Reproducing the CV R² Study Results}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+This vignette provides the steps and code required to reproduce the simulation and empirical findings presented in the paper "Evaluating the Reliability of Cross-Validated R² Estimates in Random-Effects Meta-Regression".
+
+# Setup
+
+```r
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(metafor)
+```
+
+# Reproducing Empirical Results
+
+The empirical results are stored in the package's `extdata` directory. To regenerate the empirical summary table:
+
+```r
+data_path <- system.file("extdata", "paper4_empirical_FINAL.csv", package = "claude2")
+empirical <- read.csv(data_path)
+empirical_summary <- empirical %>%
+  select(Dataset, k, Apparent_R2, CV_weighted, CV_unweighted) %>%
+  mutate(Optimism = Apparent_R2 - CV_weighted)
+print(empirical_summary)
+```
+
+# Reproducing Simulation Summary
+
+To observe the effect of $k$ on optimism:
+
+```r
+sim_data_path <- system.file("extdata", "paper4_simulation_summary.csv", package = "claude2")
+sim_summary <- read.csv(sim_data_path)
+optimism_by_k <- sim_summary %>%
+  group_by(k) %>%
+  summarize(mean_optimism = mean(optimism_w_mean, na.rm = TRUE))
+print(optimism_by_k)
+```
+
+# Visualization
+
+The figures in the paper can be inspected in the `figures/` directory. For example, `figures/paper4_fig1_cv_divergence_FINAL.png` illustrates the primary findings regarding the gap between apparent and CV estimates.
