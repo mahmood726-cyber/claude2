@@ -5,8 +5,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-# Set working directory to project root
-# setwd("C:/Users/user/OneDrive - NHS/Documents/claude2")
+# Run from the project root; paths below are relative.
 
 # 1. Load Simulation Data
 sim_summary <- read.csv("inst/extdata/paper4_simulation_summary.csv")
