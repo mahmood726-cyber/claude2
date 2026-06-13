@@ -37,21 +37,25 @@ simulate_ma_dataset <- function(k, p, true_R2) {
 perform_cv <- function(data, weighted = TRUE) {
   k <- nrow(data)
   folds <- sample(rep(1:10, length.out = k))
-  
+
   sq_errors <- numeric(k)
   weights <- numeric(k)
-  
+
+  # Moderators are every column except yi and vi; build the formula
+  # explicitly so vi stays the variance argument rather than entering the
+  # design matrix (a bare 'yi ~ .' makes predict() reject newmods later).
+  mod_cols <- setdiff(names(data), c("yi", "vi"))
+  mod_formula <- reformulate(mod_cols, response = "yi")
+
   for (i in 1:10) {
     train <- data[folds != i, ]
     test <- data[folds == i, ]
-    
+
     # Fit random-effects model
-    # Note: Using yi ~ . for simplicity
-    fit <- rma(yi ~ ., vi = vi, data = train, method = "REML")
-    
+    fit <- rma(mod_formula, vi = vi, data = train, method = "REML")
+
     # Predict for test set
-    # (Simplified prediction logic for demonstration)
-    preds <- predict(fit, newmods = as.matrix(test[, grep("X", names(test))]))$pred
+    preds <- predict(fit, newmods = as.matrix(test[, mod_cols, drop = FALSE]))$pred
     
     sq_errors[folds == i] <- (test$yi - preds)^2
     weights[folds == i] <- 1/(test$vi + fit$tau2)

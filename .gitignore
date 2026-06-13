@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+sentinel-findings.md
+sentinel-findings.jsonl
+STUCK_FAILURES.md
+STUCK_FAILURES.jsonl

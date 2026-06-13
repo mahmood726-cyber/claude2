@@ -27,22 +27,29 @@ perform_meta_cv <- function(data, weighted = TRUE, folds = 10) {
   sq_errors <- numeric(k)
   weights <- numeric(k)
   
+  # Moderators are every column except the effect size (yi) and its
+  # sampling variance (vi). Build the model formula explicitly so that vi
+  # is used only as the variance argument and never enters as a moderator
+  # (a bare 'yi ~ .' silently pulls vi into the design matrix, after which
+  # predict.rma() rejects newmods for omitting vi and every fold fails).
+  mod_cols <- setdiff(names(data), c("yi", "vi"))
+  mod_formula <- stats::reformulate(mod_cols, response = "yi")
+
   for (i in 1:folds) {
     train <- data[fold_ids != i, ]
     test <- data[fold_ids == i, ]
-    
+
     # Fit random-effects model using metafor with error handling
-    fit <- try(metafor::rma(yi ~ ., vi = vi, data = train, method = "REML"), silent = TRUE)
-    
+    fit <- try(metafor::rma(mod_formula, vi = vi, data = train, method = "REML"), silent = TRUE)
+
     if (inherits(fit, "try-error")) {
       sq_errors[fold_ids == i] <- NA
       weights[fold_ids == i] <- NA
       next
     }
-    
+
     # Predict for test set
-    mod_cols <- setdiff(names(test), c("yi", "vi"))
-    preds <- try(metafor::predict.rma(fit, newmods = as.matrix(test[, mod_cols]))$pred, silent = TRUE)
+    preds <- try(metafor::predict.rma(fit, newmods = as.matrix(test[, mod_cols, drop = FALSE]))$pred, silent = TRUE)
     
     if (inherits(preds, "try-error")) {
       sq_errors[fold_ids == i] <- NA
